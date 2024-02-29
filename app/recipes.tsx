@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { OpenAI } from "openai";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { Ingredient } from "./ingredients";
 
-const RecipeScreen = () => {
+export default function RecipeScreen() {
   const [loading, setLoading] = useState(true);
-  const [recipes, setRecipes] = useState(null);
+  const [recipes, setRecipes] = useState<string>(null);
   const params = useLocalSearchParams();
 
   const getRecipesAsync = async () => {
-    // const openai = new OpenAI({
-    //   apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
-    // });
+    const openai = new OpenAI({
+      apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+    });
 
     // const response = await openai.chat.completions.create({
     //   model: "gpt-3.5-turbo",
@@ -62,22 +63,24 @@ const RecipeScreen = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "start",
+        justifyContent: "center",
       }}
     >
+      <Stack.Screen
+        options={{
+          title: "Recipe",
+        }}
+      />
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#f4511e" />
       ) : (
         <View>
-          <Text>Recipe:</Text>
           <Text>{recipes ? recipes : "No data"}</Text>
         </View>
       )}
     </View>
   );
-};
-
-export default RecipeScreen;
+}
 
 const exampleRecipe = `Recipe: Roasted Cherry Tomato and Olive Pasta with Parmesan and Leeks
 

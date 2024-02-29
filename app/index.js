@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Button, Image, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
-const App = () => {
+export default function App() {
   const [pickedImage, setPickedImage] = useState("");
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -29,8 +29,9 @@ const App = () => {
     >
       {pickedImage === "" ? (
         <View>
-          <Button title="Pick an image" onPress={pickImage} />
-          <Text>Pick an image to classify!</Text>
+          <Pressable style={styles.button} onPress={pickImage}>
+            <Text style={styles.text}>Select an image</Text>
+          </Pressable>
         </View>
       ) : (
         <View>
@@ -41,14 +42,35 @@ const App = () => {
           <Link
             href={{
               pathname: "/ingredients",
-              params: { image: pickedImage },
+              params: { imagePath: pickedImage },
             }}
+            asChild
           >
-            Get Ingredients
+            <Pressable style={styles.button}>
+              <Text style={styles.text}>Scan your ingredients!</Text>
+            </Pressable>
           </Link>
         </View>
       )}
     </View>
   );
-};
-export default App;
+}
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: "#f4511e",
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "white",
+  },
+});
