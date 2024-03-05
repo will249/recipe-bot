@@ -1,83 +1,68 @@
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Button,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import { OpenAI } from "openai";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import * as fs from "expo-file-system";
-import { IngredientsList } from "../components/IngredientList";
+import { LoadingScreen } from "../components/LoadingScreen";
+import { IngredientChecklist } from "../components/IngredientChecklist";
+import {
+  extractSelectedIngredients,
+  formatIngredientsResponse,
+} from "../helpers/processResponses";
 
 export interface Ingredient {
   id: string;
-  label: string;
-  selected: boolean;
+  value: string;
+  selected?: boolean;
 }
-
-const extractSelectedIngredients = (ingredients: Ingredient[]): string =>
-  ingredients
-    .filter((ingredient) => ingredient.selected)
-    .map((ingredient) => ingredient.label)
-    .join(", ");
 
 export default function IngredientsScreen() {
   const [loading, setLoading] = useState(true);
   const [ingredients, setIngredients] = useState<Ingredient[]>(null);
+  const windowWidth = Dimensions.get("window").width;
+
   const onUpdateValue = (index, value) => {
     ingredients[index].selected = value;
 
     return setIngredients([...ingredients]);
   };
 
-  const params = useLocalSearchParams();
+  const params = useLocalSearchParams<{ imagePath: string }>();
 
   const getIngredientsAsync = async () => {
-    // const encodedImage = await fs.readAsStringAsync(params.imagePath, {
-    //   encoding: "base64",
-    // });
+    const encodedImage = await fs.readAsStringAsync(params.imagePath, {
+      encoding: "base64",
+    });
 
-    // const openai = new OpenAI({
-    //   apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
-    // });
+    const openai = new OpenAI({
+      apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+    });
 
-    // const response = await openai.chat.completions.create({
-    //   model: "gpt-4-vision-preview",
-    //   messages: [
-    //     {
-    //       role: "user",
-    //       content: [
-    //         {
-    //           type: "text",
-    //           text: "Identify all food items in this image, return them as items in an array, where each item is an object with an id and a label",
-    //         },
-    //         {
-    //           type: "image_url",
-    //           image_url: {
-    //             url: `data:image/jpeg;base64,{${encodedImage}}`,
-    //             detail: "low",
-    //           },
-    //         },
-    //       ],
-    //     },
-    //   ],
-    //   max_tokens: 250,
-    // });
-
-    // console.log(response.choices[0].message.content);
-    const response = [
-      { id: "0", label: "Green olives", selected: true },
-      { id: "1", label: "Garlic", selected: true },
-      { id: "2", label: "Parmigiano Reggiano cheese", selected: true },
-      { id: "3", label: "Cherry tomatoes", selected: true },
-      { id: "4", label: "Leeks", selected: true },
-      { id: "5", label: "Whole wheat fusilli pasta", selected: true },
-      { id: "6", label: "Cannellini beans", selected: true },
-    ];
-    setIngredients(response);
+    const response = await openai.chat.completions.create({
+      model: "gpt-4-vision-preview",
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Identify all food items in this image, return them as a list of ingredients separated by commas with no trailing full-stop",
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:image/jpeg;base64,{${encodedImage}}`,
+                detail: "high",
+              },
+            },
+          ],
+        },
+      ],
+      max_tokens: 250,
+    });
+    setIngredients(
+      formatIngredientsResponse(response.choices[0].message.content),
+    );
     setLoading(false);
   };
 
@@ -88,23 +73,31 @@ export default function IngredientsScreen() {
   return (
     <View
       style={{
-        height: "90%",
-        display: "flex",
+        height: "100%",
         flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-around",
+        justifyContent: "flex-start",
       }}
     >
       <Stack.Screen
         options={{
-          title: "Confirm your ingredients:",
+          headerShown: false,
         }}
       />
       {loading ? (
-        <ActivityIndicator size="large" color="#f4511e" />
+        <LoadingScreen text={"detecting ingredients..."} />
       ) : (
         <View>
-          <IngredientsList
+          <Text
+            style={{
+              fontSize: 38,
+              fontWeight: "bold",
+              marginLeft: (windowWidth - 340) / 2,
+              marginTop: "25%",
+            }}
+          >
+            Confirm your ingredients:
+          </Text>
+          <IngredientChecklist
             ingredients={ingredients}
             onUpdateValue={onUpdateValue}
           />
@@ -127,13 +120,13 @@ export default function IngredientsScreen() {
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignSelf: "center",
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius: 4,
+    borderRadius: 10,
     elevation: 3,
-    backgroundColor: "#f4511e",
+    backgroundColor: "#34A26D",
+    marginTop: 100,
   },
   text: {
     fontSize: 16,

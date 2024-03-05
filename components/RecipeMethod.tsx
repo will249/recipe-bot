@@ -8,25 +8,22 @@ import {
   View,
 } from "react-native";
 import { Ingredient } from "../app/ingredients";
+import { MethodStep } from "../app/recipes";
 
-export const IngredientList = ({
-  ingredients,
-}: {
-  ingredients: Ingredient[];
-}) => {
+export const RecipeMethod = ({ method }: { method: MethodStep[] }) => {
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.item}>
-        <Text style={styles.item}>{`• ${item.value}`}</Text>
+      <View style={styles.itemContainer}>
+        <Text style={styles.stepNumber}>{`${parseInt(item.id) + 1}.  `}</Text>
+        <Text style={styles.itemText}>{`${item.value}`}</Text>
       </View>
     );
   };
-  const windowWidth = Dimensions.get("window").width;
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={ingredients}
+        data={method}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
@@ -36,20 +33,26 @@ export const IngredientList = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: 200,
     flexDirection: "column",
     justifyContent: "flex-start",
-    backgroundColor: "#5EC593",
-    borderRadius: 10,
     margin: 25,
-    paddingTop: 5,
   },
-  item: {
-    marginHorizontal: 12,
-    marginVertical: 3,
+  itemContainer: {
+    marginRight: 40,
+    marginVertical: 5,
     fontSize: 18,
-    color: "white",
     flexDirection: "row",
     alignItems: "center",
+  },
+  itemText: {
+    marginVertical: 5,
+    fontSize: 18,
+    color: "black",
+  },
+  stepNumber: {
+    marginHorizontal: 5,
+    marginVertical: 5,
+    fontSize: 18,
+    color: "#5EC593",
   },
 });
