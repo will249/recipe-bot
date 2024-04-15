@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Ingredient } from "../app/ingredients";
+import { Ingredient } from "../entities/recipe";
 
 export const IngredientList = ({
   ingredients,

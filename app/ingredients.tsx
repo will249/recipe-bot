@@ -6,15 +6,11 @@ import * as fs from "expo-file-system";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { IngredientChecklist } from "../components/IngredientChecklist";
 import {
+  exampleIngredients,
   extractSelectedIngredients,
   formatIngredientsResponse,
 } from "../helpers/processResponses";
-
-export interface Ingredient {
-  id: string;
-  value: string;
-  selected?: boolean;
-}
+import { Ingredient } from "../entities/recipe";
 
 export default function IngredientsScreen() {
   const [loading, setLoading] = useState(true);
@@ -52,7 +48,7 @@ export default function IngredientsScreen() {
               type: "image_url",
               image_url: {
                 url: `data:image/jpeg;base64,{${encodedImage}}`,
-                detail: "high",
+                detail: "low",
               },
             },
           ],
@@ -63,6 +59,7 @@ export default function IngredientsScreen() {
     setIngredients(
       formatIngredientsResponse(response.choices[0].message.content),
     );
+    // setIngredients(exampleIngredients);
     setLoading(false);
   };
 
