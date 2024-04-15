@@ -1,5 +1,7 @@
 # Recipe Bot
 
+<img src="./images/poc-flow.png" width="100%" height="100%" />
+
 This repository contains the code for a PoC recipe bot mobile app. The app uses openAI APIs to provide users with recipes based on the ingredients they have in their cupboards.
 
 ## Please note:
