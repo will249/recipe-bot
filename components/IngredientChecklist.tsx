@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import CheckBox from "expo-checkbox";
-import { Ingredient } from "../app/ingredients";
+import { Ingredient } from "../entities/recipe";
 
 export const IngredientChecklist = ({
   ingredients,

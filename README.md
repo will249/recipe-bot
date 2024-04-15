@@ -1,8 +1,8 @@
 # Recipe Bot
 
-<img src="./images/poc-flow.png" width="100%" height="100%" />
-
 This repository contains the code for a PoC recipe bot mobile app. The app uses openAI APIs to provide users with recipes based on the ingredients they have in their cupboards.
+
+<img src="images/poc-flow.png" width="100%" height="100%" />
 
 ## Please note:
 
@@ -13,9 +13,13 @@ This is a PoC and has the following urgent to-dos:
 
 ## Features
 
-- Automatic detection of ingredients from an image
+- Automatic detection of ingredients using openAI vision API
 - Optional filtering of unwanted ingredients
-- Random recipe suggestions based on ingredients selected
+- Recipe suggestions based on ingredients selected using openAI GPT3.5Turbo
+
+## Next steps
+
+- Use instructor for enforce structured outputs
 
 ## Contributing
 

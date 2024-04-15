@@ -1,15 +1,9 @@
-import React, { useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { Recipe } from "../entities/recipe";
 
-export const RecipeDetails = ({ recipe }) => {
+export const RecipeDetails = ({ recipe }: { recipe: Recipe }) => {
   return (
     <View style={styles.container}>
       <View
@@ -32,7 +26,7 @@ export const RecipeDetails = ({ recipe }) => {
         }}
       >
         <FontAwesome name="users" size={20} color="black" />
-        <Text style={styles.text}>{`serves ${recipe.serves}`}</Text>
+        <Text style={styles.text}>{`serves ${recipe.portions}`}</Text>
       </View>
     </View>
   );

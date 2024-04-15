@@ -1,5 +1,4 @@
-import { Ingredient } from "../app/ingredients";
-import { Recipe } from "../app/recipes";
+import { Ingredient } from "../entities/recipe";
 
 export const extractSelectedIngredients = (ingredients: Ingredient[]): string =>
   ingredients
@@ -17,7 +16,6 @@ export const formatIngredientsResponse = (response: string): Ingredient[] => {
     value: value.toLowerCase(),
     selected: true,
   }));
-  console.log(ingredients);
 
   return ingredients;
 };
@@ -81,3 +79,11 @@ const exampleRecipe = {
   time: "25",
   portions: "2",
 };
+
+export const exampleIngredients = [
+  { id: "0", value: "fusilli pasta", selected: true },
+  { id: "1", value: "eggs", selected: true },
+  { id: "2", value: "leeks", selected: true },
+  { id: "3", value: "parmesan cheese", selected: true },
+  { id: "4", value: "butter beans", selected: true },
+];

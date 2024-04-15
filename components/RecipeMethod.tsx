@@ -7,14 +7,13 @@ import {
   Text,
   View,
 } from "react-native";
-import { Ingredient } from "../app/ingredients";
-import { MethodStep } from "../app/recipes";
+import { MethodStep } from "../entities/recipe";
 
 export const RecipeMethod = ({ method }: { method: MethodStep[] }) => {
   const renderItem = ({ item }) => {
     return (
       <View style={styles.itemContainer}>
-        <Text style={styles.stepNumber}>{`${parseInt(item.id) + 1}.  `}</Text>
+        <Text style={styles.stepNumber}>{`${item.id}.  `}</Text>
         <Text style={styles.itemText}>{`${item.value}`}</Text>
       </View>
     );

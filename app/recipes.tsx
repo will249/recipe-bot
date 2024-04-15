@@ -1,3 +1,4 @@
+import { z } from "zod";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -7,13 +8,15 @@ import {
   Text,
   View,
 } from "react-native";
-import { OpenAI } from "openai";
+import OpenAI from "openai";
+import Instructor from "@instructor-ai/instructor";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
-import { Ingredient } from "./ingredients";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { RecipeDetails } from "../components/RecipeDetails";
 import { IngredientList } from "../components/IngredientList";
 import { RecipeMethod } from "../components/RecipeMethod";
+import { Recipe, recipeSchema } from "../entities/recipe";
+
 LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
@@ -21,16 +24,22 @@ export default function RecipeScreen() {
   const [loading, setLoading] = useState(true);
   const [recipes, setRecipes] = useState<Recipe>(null);
   const params = useLocalSearchParams();
-  const windowWidth = Dimensions.get("window").width;
 
   const getRecipesAsync = async () => {
-    const openai = new OpenAI({
-      apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+    const client = Instructor({
+      client: new OpenAI({
+        apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+      }),
+      mode: "TOOLS",
     });
 
-    const response = await openai.chat.completions.create({
+    const response = await client.chat.completions.create({
       model: "gpt-3.5-turbo-1106",
-      response_format: { type: "json_object" },
+      max_retries: 2,
+      response_model: {
+        schema: recipeSchema,
+        name: "Recipe",
+      },
       messages: [
         {
           role: "user",
@@ -48,9 +57,8 @@ export default function RecipeScreen() {
       ],
     });
 
-    console.log(response.choices[0].message.content);
-
-    setRecipes(JSON.parse(response.choices[0].message.content));
+    setRecipes(response);
+    console.log(recipes);
     setLoading(false);
   };
 
@@ -113,16 +121,4 @@ export default function RecipeScreen() {
       )}
     </View>
   );
-}
-
-export interface MethodStep {
-  id: string;
-  value: string;
-}
-export interface Recipe {
-  title: string;
-  ingredients: Ingredient[];
-  method: MethodStep[];
-  time: string;
-  portions: string;
 }
